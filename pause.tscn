@@ -1,0 +1,152 @@
+[gd_scene load_steps=2 format=3 uid="uid://t6oofp06xru0"]
+
+[sub_resource type="GDScript" id="GDScript_eylr0"]
+script/source = "extends Control
+
+@onready var main = $\"../../../..\"
+
+
+
+
+var _is_paused:bool = false:
+	set = set_paused
+
+func set_paused(value:bool) ->void:
+	_is_paused = value
+	get_tree().paused = _is_paused
+	visible = _is_paused
+	
+func _unhandled_input(event: InputEvent) ->void:
+		if Input.is_action_just_pressed(\"esc\"):
+			_is_paused = !_is_paused
+			
+			
+
+
+#
+func resume():
+	get_tree().paused = false
+	self.visible = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
+func pause():
+	get_tree().paused = true
+	self.visible = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	
+func _input(event):
+	if event.is_action_pressed(\"ui_cancel\"):
+		if get_tree().paused:
+			resume()
+		else:
+			pause()
+	
+func testesc():
+	if Input.is_action_just_pressed(\"esc\") and get_tree().paused == false:
+		
+		pause() 
+	elif Input.is_action_just_pressed(\"esc\") and get_tree().paused == true:
+		resume()
+		
+
+func _on_resume_pressed() -> void:
+		
+	resume()
+		
+
+func _on_restart_pressed() -> void:
+	get_tree().reload_current_scene() and get_tree().paused == false
+
+
+func restart():
+		get_tree().reload_current_scene() and get_tree().paused == false
+		
+
+	
+	
+
+
+
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()
+
+
+
+
+
+
+
+
+
+		
+
+
+func _on_options_pressed() -> void:
+	pass # Replace with function body.
+"
+
+[node name="Pause" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 69.0
+offset_right = 4.0
+offset_bottom = 69.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.00312, 0.810814)
+script = SubResource("GDScript_eylr0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 6.97823
+offset_top = 27.1332
+offset_right = 49.9782
+offset_bottom = 71.1332
+scale = Vector2(28.2208, 15.845)
+color = Color(0.378644, 0.671943, 0.956297, 1)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 447.604
+offset_top = 77.6997
+offset_right = 517.604
+offset_bottom = 205.7
+scale = Vector2(4.14526, 4.14526)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "  Paused"
+
+[node name="OptionButton" type="OptionButton" parent="PanelContainer/VBoxContainer/Label"]
+layout_mode = 0
+offset_left = -44.9716
+offset_top = 5.95055
+offset_right = -12.9716
+offset_bottom = 25.9505
+
+[node name="Resume" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Resume"
+
+[node name="Restart" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Restart"
+
+[node name="Quit" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
