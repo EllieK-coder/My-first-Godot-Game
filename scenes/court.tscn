@@ -1,0 +1,250 @@
+[gd_scene load_steps=30 format=3 uid="uid://fiqjs3d0idfx"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/score_label.gd" id="2_label"]
+[ext_resource type="Texture2D" path="res://textures/oak_veneer_01_diff_1k.jpg" id="3_oak"]
+[ext_resource type="Texture2D" path="res://textures/basketball.jpg" id="4_ball"]
+[ext_resource type="Texture2D" path="res://textures/forest_wall.jpg" id="5_forest"]
+[ext_resource type="PackedScene" path="res://addons/gdquest_gobot/model/gobot.glb" id="6_gobot"]
+[ext_resource type="PackedScene" uid="uid://t6oofp06xru0" path="res://scenes/pause.tscn" id="7_pause"]
+[ext_resource type="PackedScene" path="res://scenes/hoop.tscn" id="8_hoop"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a202f"]
+sky_top_color = Color(0.241346, 0.725797, 0.963419, 1)
+sky_horizon_color = Color(0.787728, 0.901091, 0.951496, 1)
+ground_horizon_color = Color(0.787728, 0.901091, 0.951496, 1)
+
+[sub_resource type="Sky" id="Sky_noarx"]
+sky_material = SubResource("ProceduralSkyMaterial_a202f")
+
+[sub_resource type="Environment" id="Environment_a0tk4"]
+background_mode = 2
+sky = SubResource("Sky_noarx")
+ambient_light_source = 3
+ambient_light_energy = 0.6
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
+albedo_texture = ExtResource("3_oak")
+uv1_scale = Vector3(0.25, 0.25, 0.25)
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="CeilingMaterial"]
+albedo_color = Color(0.86, 0.85, 0.82, 1)
+
+[sub_resource type="StandardMaterial3D" id="WallMaterial"]
+albedo_texture = ExtResource("5_forest")
+
+[sub_resource type="StandardMaterial3D" id="PoleMaterial"]
+albedo_color = Color(0.15, 0.15, 0.17, 1)
+metallic = 0.5
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="BallMaterial"]
+albedo_texture = ExtResource("4_ball")
+roughness = 0.8
+
+[sub_resource type="PhysicsMaterial" id="BallPhysics"]
+friction = 0.6
+bounce = 0.7
+
+[sub_resource type="SphereShape3D" id="BallShape"]
+radius = 0.24
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(14.3867, 1, 30.1707)
+
+[sub_resource type="BoxShape3D" id="CeilingShape"]
+size = Vector3(14.4129, 1, 29.6547)
+
+[sub_resource type="BoxShape3D" id="WallShape1"]
+size = Vector3(13.5913, 8.02527, 1)
+
+[sub_resource type="BoxShape3D" id="WallShape2"]
+size = Vector3(13.5574, 7.86157, 0.523438)
+
+[sub_resource type="BoxShape3D" id="WallShape3"]
+size = Vector3(27.5526, 8.62136, 0.764771)
+
+[sub_resource type="BoxShape3D" id="WallShape4"]
+size = Vector3(28.2377, 7.98694, 1)
+
+[sub_resource type="CapsuleShape3D" id="PlayerShape"]
+
+[sub_resource type="CylinderShape3D" id="PoleShape1"]
+height = 7.24353
+radius = 0.282715
+
+[sub_resource type="CylinderShape3D" id="PoleShape2"]
+height = 7.1604
+radius = 0.18457
+
+[sub_resource type="LabelSettings" id="ScoreLabelSettings"]
+font_size = 32
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Court" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_a0tk4")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.88595, 0.476098, 0, -0.476098, 0.88595, 5.49409, 9.58861, 2.29011)
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.18683, 0, -8.24105)
+size = Vector3(14.3856, 1, 29.3454)
+material = SubResource("FloorMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0274353, 0, -0.199465)
+shape = SubResource("FloorShape")
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.10411, 10.0749, -7.88395)
+size = Vector3(14.4129, 1, 29.6547)
+material = SubResource("CeilingMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ceiling"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ceiling/StaticBody3D"]
+shape = SubResource("CeilingShape")
+
+[node name="Wall" type="CSGBox3D" parent="."]
+transform = Transform3D(-0.998666, -0.0515164, 0, 0.0515164, -0.998666, 0, 0, 0, 0.999993, 2.17002, 5.57767, 6.26502)
+size = Vector3(14.3119, 10.1531, 0.244141)
+material = SubResource("WallMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Wall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.112061, 0.142029, 0)
+shape = SubResource("WallShape1")
+
+[node name="Wall2" type="CSGBox3D" parent="."]
+transform = Transform3D(0.999993, 0, 0, 0, 0.999993, 0, 0, 0, 0.999993, 2.17002, 5.00984, -22.9832)
+size = Vector3(14.3119, 10.8984, 0.244141)
+material = SubResource("WallMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Wall2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall2/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0125732, 0.281616, 0.0643044)
+shape = SubResource("WallShape2")
+
+[node name="Wall3" type="CSGBox3D" parent="."]
+transform = Transform3D(0.00317647, 0, -0.999986, 0, 0.999991, 0, 0.999986, 0, 0.00317647, 9.21713, 5.63211, -8.30734)
+size = Vector3(29.3449, 10.262, 0.244141)
+material = SubResource("WallMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Wall3"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall3/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0589714, -0.222039, 0.0986319)
+shape = SubResource("WallShape3")
+
+[node name="Wall4" type="CSGBox3D" parent="."]
+transform = Transform3D(0.00317647, 1.39577e-17, -0.999984, -0.0193716, -0.999801, -6.1534e-05, -0.999796, 0.0193717, -0.00317587, -4.92013, 5.0088, -8.26613)
+size = Vector3(29.1492, 10.7133, 0.244141)
+material = SubResource("WallMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Wall4"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall4/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0625858, 0.142395, 0.164128)
+shape = SubResource("WallShape4")
+
+[node name="Pole1" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24596, 3.98584, -21.4865)
+radius = 0.282715
+height = 7.24353
+material = SubResource("PoleMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Pole1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pole1/StaticBody3D"]
+shape = SubResource("PoleShape1")
+
+[node name="Hoop1" parent="." instance=ExtResource("8_hoop")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.24596, 6.4, -20.55)
+
+[node name="Pole2" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.12203, 3.78517, 5.08338)
+radius = 0.18457
+height = 7.1604
+material = SubResource("PoleMaterial")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Pole2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pole2/StaticBody3D"]
+shape = SubResource("PoleShape2")
+
+[node name="Hoop2" parent="." instance=ExtResource("8_hoop")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.12203, 6.4, 4.2)
+
+[node name="Ball" type="RigidBody3D" parent="." groups=["ball"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.159196, 1.12195, -2.32354)
+physics_material_override = SubResource("BallPhysics")
+continuous_cd = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ball"]
+shape = SubResource("BallShape")
+
+[node name="Mesh" type="CSGSphere3D" parent="Ball"]
+radius = 0.24
+radial_segments = 24
+rings = 16
+material = SubResource("BallMaterial")
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3292, 0)
+script = ExtResource("1_player")
+
+[node name="Gobot" parent="Player" instance=ExtResource("6_gobot")]
+transform = Transform3D(-0.993064, 0, 0.117572, 0, 0.999999, 0, -0.117572, 0, -0.993064, 0.0535216, -0.768868, -0.99818)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("PlayerShape")
+
+[node name="Camera3D" type="Camera3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 0.996907, -0.0785898, 0, 0.0785898, 0.996907, 0.166108, 0.281551, -1.57396)
+
+[node name="InteractRay" type="RayCast3D" parent="Player/Camera3D"]
+target_position = Vector3(0, 0, -3)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 220.0
+offset_bottom = 60.0
+text = "Score: 0"
+label_settings = SubResource("ScoreLabelSettings")
+script = ExtResource("2_label")
+
+[node name="Crosshair" type="Label" parent="UI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -6.0
+offset_top = -14.0
+offset_right = 6.0
+offset_bottom = 12.0
+text = "+"
+horizontal_alignment = 1
+
+[node name="PauseLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Pause" parent="PauseLayer" instance=ExtResource("7_pause")]

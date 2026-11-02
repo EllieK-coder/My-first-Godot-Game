@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/score_area.gd" id="1_score"]
+
+[sub_resource type="StandardMaterial3D" id="Board"]
+albedo_color = Color(0.95, 0.95, 0.95, 1)
+
+[sub_resource type="StandardMaterial3D" id="BoardTrim"]
+albedo_color = Color(0.08, 0.08, 0.08, 1)
+
+[sub_resource type="StandardMaterial3D" id="Rim"]
+albedo_color = Color(0.85, 0.12, 0.1, 1)
+metallic = 0.4
+roughness = 0.4
+
+[sub_resource type="BoxShape3D" id="BoardShape"]
+size = Vector3(1.8, 1.05, 0.05)
+
+[sub_resource type="CylinderShape3D" id="ScoreShape"]
+height = 0.15
+radius = 0.3
+
+[sub_resource type="BoxShape3D" id="BracketShape"]
+size = Vector3(0.12, 0.05, 0.15)
+
+[node name="Hoop" type="Node3D"]
+
+[node name="Backboard" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.65)
+size = Vector3(1.8, 1.05, 0.05)
+material = SubResource("Board")
+
+[node name="Square" type="CSGBox3D" parent="Backboard"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0.03)
+size = Vector3(0.6, 0.45, 0.01)
+material = SubResource("BoardTrim")
+
+[node name="Inner" type="CSGBox3D" parent="Backboard/Square"]
+operation = 2
+size = Vector3(0.52, 0.37, 0.05)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Backboard"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Backboard/StaticBody3D"]
+shape = SubResource("BoardShape")
+
+[node name="Bracket" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.55)
+size = Vector3(0.12, 0.05, 0.15)
+material = SubResource("Rim")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Bracket"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bracket/StaticBody3D"]
+shape = SubResource("BracketShape")
+
+[node name="Rim" type="CSGTorus3D" parent="."]
+inner_radius = 0.42
+outer_radius = 0.48
+sides = 24
+ring_sides = 8
+use_collision = true
+material = SubResource("Rim")
+
+[node name="ScoreArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+monitorable = false
+script = ExtResource("1_score")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScoreArea"]
+shape = SubResource("ScoreShape")

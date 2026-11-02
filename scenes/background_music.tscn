@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwwuw4ekjnv5l"]
+
+[ext_resource type="AudioStream" path="res://audio/night_shade_adhesive_wombat.ogg" id="1_music"]
+
+[node name="BackgroundMusic" type="AudioStreamPlayer"]
+process_mode = 3
+stream = ExtResource("1_music")
+autoplay = true
+bus = &"Music"
